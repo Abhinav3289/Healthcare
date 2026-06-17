@@ -12,25 +12,23 @@
 
 ## 🔑 Key Features
 
-### 1. Three-Level Authentication
+-### 👤 Patient Portal
+- **Authentication:** Secure sign-up and login with encrypted passwords.
+- **Profile Management:** View and edit personal data (Name, Phone, Address, Gender, Date of Birth) and upload custom profile pictures.
+- **Booking Engine:** Search and filter doctors by medical specialties, view calendar slot availability, and real-time double-booking prevention.
+- **Flexible Payments:** Checkout securely using Stripe Checkout Sessions, Razorpay Orders, or select Cash on Delivery.
+- **Appointment Tracking:** Monitor upcoming or past logs with instant slot-release capabilities upon cancellation.
 
-- **Patient Login**: 
-  - Patients can sign up, log in, and book appointments with doctors.
-  - Manage appointments (view, cancel, or reschedule).
-  - Secure online payment options available (cash, Stripe, Razorpay).
-  - User profile with editable information (name, email, address, gender, birthday, profile picture).
+### 🩺 Doctor Portal
+- **Dedicated Dashboard:** Review overall calculated financial earnings, total unique patients treated, and a real-time list of upcoming bookings.
+- **Schedule Controls:** Toggle general availability status on or off instantly.
+- **Appointment Management:** Review comprehensive patient profiles and mark appointments as completed or canceled.
+- **Profile Customization:** Independently adjust consulting fees, clinic addresses, and professional biographies.
 
-- **Doctor Login**:
-  - Doctors can log in and manage appointments.
-  - Dashboard displays earnings, number of patients, number of appointments, and latest bookings.
-  - Update profile details (description, fees, address, availability status).
-  - View appointment details (patient info, payment mode, appointment status).
-
-- **Admin Login**:
-  - Admins can create and manage doctor profiles.
-  - Dashboard with analytics: total doctors, total appointments, total patients, and recent bookings.
-  - Add new doctors (image, specialty, degree, experience, address, fees, etc.).
-  - View and manage all appointments (cancel or mark as completed).
+### 🔑 Admin Control Panel
+- **Doctor Onboarding:** Create new medical profiles, handle security configurations, and upload credentials/avatars to the cloud storage pipeline.
+- **Global Dashboard Analytics:** Inspect platform counters including global user registration tallies, total operational doctors, and complete booking counts.
+- **System Overrides:** Review the master directory of global bookings with permissions to issue overarching appointment cancellations.
 
 ## 🏠 Home Page
 
@@ -110,6 +108,10 @@
   - **Razorpay Integration**
 - Ensures a secure and smooth payment experience for users.
 
+
+## Backend Architecture Diagram
+The application establishes transactional reliability by using Data Snapshots. When an appointment is booked, the system injects static object duplicates of both the userData and docData directly into the appointment ledger. This guarantees historic transactional receipts remain completely accurate even if a doctor changes their fees, address, or profile picture in the future.
+
 ## 🌐 Project Setup
 
 To set up and run this project locally:
@@ -130,8 +132,19 @@ To set up and run this project locally:
 3. **Environment Variables**:
    - Create a `.env` file in the root directory and add the following:
      ```env
-     MONGO_URI=your_mongodb_connection_string
+     
      JWT_SECRET=your_jwt_secret
+     # Database Link
+     MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net
+ 
+     # Static Administrative Credentials
+     ADMIN_EMAIL=admin@prescripto.com
+     ADMIN_PASSWORD=your_secure_admin_password
+
+     # Cloudinary Asset Keys
+     CLOUDINARY_NAME=your_cloudinary_cloud_name
+     CLOUDINARY_API_KEY=your_cloudinary_api_key
+     CLOUDINARY_SECRET_KEY=your_cloudinary_api_secret
      STRIPE_API_KEY=your_stripe_api_key
      RAZORPAY_API_KEY=your_razorpay_api_key
      ```
@@ -145,16 +158,14 @@ To set up and run this project locally:
 
 ```plaintext
 prescripto/
-├── client/          # Frontend (React.js)
-├── server/          # Backend (Node.js, Express.js)
-├── models/          # MongoDB Schemas
-├── controllers/     # API Controllers
-├── routes/          # API Routes
-├── middleware/      # Authentication and Error Handling
-├── config/          # Configuration Files
-├── utils/           # Utility Functions
-├── public/          # Static Files
-└── .env             # Environment Variables
+├── client/              # Frontend Architecture (React.js SPA)
+├── server/              # Backend Architecture (Node.js & Express.js)
+│   ├── config/          # Database & Cloudinary service initializations
+│   ├── controllers/     # Core Business logic handlers (Admin, Doctor, User)
+│   ├── middleware/      # JWT Identity verification & Multer file parsers
+│   ├── models/          # Mongoose Schemas (User, Doctor, Appointment)
+│   └── routes/          # Express API Endpoint mappings
+└── .env                 # Application Environment flags
 ```
 
 ## 🤝 Contributing
